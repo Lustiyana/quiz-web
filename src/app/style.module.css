@@ -1,0 +1,23 @@
+.input {
+  @apply h-10 focus:outline-none;
+}
+
+.button-auth {
+  @apply border-2 border-blue-400 hover:text-white hover:bg-blue-300 rounded-md py-2 mt-4;
+}
+
+.form-container {
+  @apply flex flex-col justify-center items-center w-3/4;
+}
+
+.form-title {
+  @apply text-4xl text-blue-700 font-bold mb-16;
+}
+
+.form {
+  @apply flex flex-col border p-8 rounded-md gap-8 w-1/2;
+}
+
+.input-style {
+  @apply border-b;
+}

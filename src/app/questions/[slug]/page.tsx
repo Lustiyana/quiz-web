@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/Navbar/Navbar";
 import { useEffect, useState } from "react";
 import axios from "../../../../node_modules/axios/index";
 import Link from "../../../../node_modules/next/link";
@@ -68,16 +69,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   return (
     <div>
-      <div className="navbar bg-base-100 shadow-md flex justify-between">
-        <Link href="/" className="btn btn-ghost normal-case text-xl">
-          Quizzz
-        </Link>
-        <div className="border py-2 px-4">
-          <div>JJ</div>
-          <div>MM</div>
-          <div>SS</div>
-        </div>
-      </div>
+      <Navbar />
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-center justify-center h-3/4">

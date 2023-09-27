@@ -1,44 +1,30 @@
+import SideAuth from "@/components/SideAuth/SideAuth";
 import React from "react";
-import Link from "../../../node_modules/next/link";
-import styles from "../../styles/style.module.css";
+import styles from "../style.module.css";
 
 export default function Page() {
   return (
     <div className="flex h-screen">
-      <div
-        className={`${styles["welcome-container"]} flex flex-col justify-center items-center w-1/2`}
-      >
-        <h1 className="text-blue-700 font-bold text-3xl z-10">Hello!</h1>
-        <p className="max-w-md text-white text-xl z-10">
-          Add your personal info to make connection with us
-        </p>
-        <Link
-          href="/register"
-          className="border-2 py-4 px-8 rounded-md text-lg mt-8 hover:bg-purple-400 z-10"
-        >
-          Sign Up
-        </Link>
-      </div>
-      <div className="flex flex-col justify-center items-center w-3/4">
-        <h2 className="text-4xl text-blue-700 font-bold mb-16">Sign in</h2>
-        <form className="flex flex-col border p-8 rounded-md gap-8 w-1/2">
-          <div className="border-b">
-            <input
-              type="text"
-              placeholder="Email"
-              className="h-10 focus:outline-none"
-            />
+      <SideAuth
+        heading1="Hello"
+        message="Add your personal info to make connection with us"
+        link="/register"
+        buttonName="Sign Up"
+      />
+      <div className={styles["form-container"]}>
+        <h2 className={styles["form-title"]}>Sign in</h2>
+        <form className={styles.form}>
+          <div className={styles["form-style"]}>
+            <input type="text" placeholder="Email" className={styles.input} />
           </div>
-          <div className="border-b">
+          <div className={styles["form-style"]}>
             <input
               type="password"
               placeholder="Password"
-              className="h-10 focus:outline-none"
+              className={styles.input}
             />
           </div>
-          <button className="border-2 border-blue-400 hover:text-white hover:bg-blue-300 rounded-md py-2 mt-4">
-            Sign In
-          </button>
+          <button className={styles["button-auth"]}>Sign In</button>
         </form>
       </div>
     </div>
