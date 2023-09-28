@@ -4,17 +4,18 @@ import SideAuth from "@/components/SideAuth/SideAuth";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "../../../node_modules/next/navigation";
 import styles from "../style.module.css";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
+  const token = uuidv4();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (email == "user@gmail.com" && password == "abc1234") {
-      const token = "123456789";
       localStorage.setItem("token", token);
       localStorage.setItem("email", email);
 
@@ -27,7 +28,6 @@ export default function Page() {
     if (isLogin) {
       router.push("/");
     }
-    console.log(isLogin);
   }, [isLogin]);
 
   return (

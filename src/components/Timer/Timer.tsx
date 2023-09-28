@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 export default function Timer() {
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(30);
-  const [seconds, setSeconds] = useState(0);
+  const [hours, setHours] = useState(Number(localStorage.getItem("hours")));
+  const [minutes, setMinutes] = useState(
+    Number(localStorage.getItem("minutes"))
+  );
+  const [seconds, setSeconds] = useState(
+    Number(localStorage.getItem("seconds"))
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -28,6 +32,16 @@ export default function Timer() {
 
     return () => clearInterval(interval);
   }, [hours, minutes]);
+
+  useEffect(() => {
+    localStorage.setItem("hours", hours.toString());
+    localStorage.setItem("minutes", minutes.toString());
+    localStorage.setItem("seconds", seconds.toString());
+
+    if (hours === 0 && minutes === 0 && seconds === 0) {
+      document.getElementById("my_modal_5").showModal();
+    }
+  }, [hours, minutes, seconds]);
 
   return (
     <div className="border py-2 px-4 text-error">

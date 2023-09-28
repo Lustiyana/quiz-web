@@ -3,6 +3,10 @@ import Navbar from "@/components/Navbar/Navbar";
 import { useEffect, useState } from "react";
 import axios from "../../../../node_modules/axios/index";
 import Link from "../../../../node_modules/next/link";
+import ChoiceComponent from "../components/ChoiceComponent/ChoiceComponent";
+import DrawerSide from "../components/DrawerSide/DrawerSide";
+import QuestionsComponent from "../components/ButtonComponent/ButtonComponent";
+import { useRouter } from "../../../../node_modules/next/navigation";
 
 interface QuizData {
   category: string;
@@ -23,42 +27,48 @@ export async function generateStaticParams() {
 }
 
 export default function Page({ params }: { params: { slug: string } }) {
+  const router = useRouter();
   const [data, setData] = useState<QuizData[]>([]);
   const [question, setQuestion] = useState<QuizData>();
   const [answers, setAnswers] = useState([]);
   const [answer, setAnswer] = useState("");
+  const [countAnswered, setCountAnswered] = useState(0);
+  const dataString = localStorage.getItem("arrQuestions");
+  let arrCurrent = dataString ? JSON.parse(dataString) : [];
 
   useEffect(() => {
-    const dataString = localStorage.getItem("data");
-    const data = dataString ? JSON.parse(dataString) : null;
-    setData(data);
-    console.log(data);
+    if (!localStorage.getItem("token")) {
+      router.push("/login");
+    }
   }, []);
+
   function randomSort(arr: any) {
     return arr?.slice().sort(() => Math.random() - 0.5);
   }
 
-  function numberToAlphabet(number: any) {
-    if (number >= 1 && number <= 26) {
-      return String.fromCharCode(64 + parseInt(number));
-    } else {
-      return "Invalid input. Please provide a number between 1 and 26.";
+  useEffect(() => {
+    if (params.slug) {
+      const dataString = localStorage.getItem("data");
+      const data = dataString ? JSON.parse(dataString) : null;
+      setData(data);
+      const question = data[Number(params.slug) - 1];
+      setQuestion(question);
+      let answers = question?.incorrect_answers;
+      answers?.push(question?.correct_answer);
+      const randomlyChoice = randomSort(answers);
+      setAnswers(randomlyChoice);
     }
-  }
+  }, [params.slug]);
 
   useEffect(() => {
-    const question = data[Number(params.slug) - 1];
-    setQuestion(question);
-    let answers = question?.incorrect_answers;
-    answers?.push(question?.correct_answer);
-    const randomlyChoice = randomSort(answers);
-    setAnswers(randomlyChoice);
-  }, [data, params.slug]);
-  console.log(data);
+    const tempArr = arrCurrent;
+    const objAnswer = tempArr.find((item: any) => item.id === params.slug);
+    setAnswer(objAnswer?.answer);
+  }, []);
 
-  function handleSelectAnswer(e: any) {
-    setAnswer(e);
-  }
+  useEffect(() => {
+    setCountAnswered(arrCurrent.length);
+  }, [answer]);
 
   return (
     <div>
@@ -73,81 +83,27 @@ export default function Page({ params }: { params: { slug: string } }) {
           >
             Open drawer
           </label>
-          <div className="flex flex-col justify-center items-center border w-3/4 rounded-md h-3/4 gap-8 p-8">
-            <div className="text-center">{question?.question}</div>
-            <div className="flex flex-col gap-4">
-              {answers?.map((item, index) => (
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`border w-12 h-12 flex items-center justify-center rounded-full cursor-pointer ${
-                      item === answer ? "bg-primary text-white" : ""
-                    }`}
-                    onClick={() => handleSelectAnswer(item)}
-                  >
-                    {numberToAlphabet(index + 1)}
-                  </div>
-                  <div>{item}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-4 mt-8">
-            {params.slug !== "1" ? (
-              <Link
-                href={`/questions/${Number(params.slug) - 1}`}
-                className="btn btn-outline"
-              >
-                Prev
-              </Link>
-            ) : null}
-            {params.slug === data.length?.toString() ? (
-              <Link href="results" className="btn btn-outline">
-                Finish
-              </Link>
-            ) : (
-              <Link
-                href={`/questions/${Number(params.slug) + 1}`}
-                className="btn btn-outline"
-              >
-                Next
-              </Link>
-            )}
-          </div>
+          <ChoiceComponent
+            answers={answers}
+            answer={answer}
+            question={question}
+            arrCurrent={arrCurrent}
+            slug={params.slug}
+            setAnswer={setAnswer}
+          />
+          <QuestionsComponent
+            slug={params.slug}
+            data={data}
+            arrCurrent={arrCurrent}
+          />
         </div>
-        <div className="drawer-side">
-          <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-          <div className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-            {/* Sidebar content here */}
-            <div className="grid grid-cols-5 gap-4">
-              {data?.map((item, index) => (
-                <Link
-                  href={`/questions/${index + 1}`}
-                  className={`border btn hover:bg-slate-700 hover:text-white ${
-                    index + 1 === Number(params.slug)
-                      ? "bg-slate-700 text-white p-4"
-                      : "p-4"
-                  }`}
-                >
-                  <div className="max-w-8">{index + 1}</div>
-                </Link>
-              ))}
-            </div>
-            <div className="flex justify-between mt-8">
-              <div>
-                <div>Total Soal:</div>
-                <div className="text-center text-6xl font-bold text-warning">
-                  10
-                </div>
-              </div>
-              <div>
-                <div>Jumlah Terjawab:</div>
-                <div className="text-center text-6xl font-bold text-success">
-                  0
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DrawerSide
+          data={data}
+          slug={params.slug}
+          countAnswered={countAnswered}
+          answer={answer}
+          arrCurrent={arrCurrent}
+        />
       </div>
     </div>
   );
