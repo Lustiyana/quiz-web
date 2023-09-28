@@ -1,9 +1,9 @@
 .input {
-  @apply h-10 focus:outline-none;
+  @apply h-10 focus:outline-none w-full;
 }
 
 .button-auth {
-  @apply border-2 border-blue-400 hover:text-white hover:bg-blue-300 rounded-md py-2 mt-4;
+  @apply border-2 border-blue-400 hover:text-white hover:bg-blue-300 rounded-md py-2 mt-4 btn bg-transparent;
 }
 
 .form-container {

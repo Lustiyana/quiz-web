@@ -1,8 +1,35 @@
+"use client";
+
 import SideAuth from "@/components/SideAuth/SideAuth";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "../../../node_modules/next/navigation";
 import styles from "../style.module.css";
 
 export default function Page() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLogin, setIsLogin] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    if (email == "user@gmail.com" && password == "abc1234") {
+      const token = "123456789";
+      localStorage.setItem("token", token);
+      localStorage.setItem("email", email);
+
+      if (localStorage.getItem("token")) {
+        setIsLogin(true);
+      }
+    }
+  };
+  useEffect(() => {
+    if (isLogin) {
+      router.push("/");
+    }
+    console.log(isLogin);
+  }, [isLogin]);
+
   return (
     <div className="flex h-screen">
       <SideAuth
@@ -13,18 +40,28 @@ export default function Page() {
       />
       <div className={styles["form-container"]}>
         <h2 className={styles["form-title"]}>Sign in</h2>
-        <form className={styles.form}>
-          <div className={styles["form-style"]}>
-            <input type="text" placeholder="Email" className={styles.input} />
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles["input-style"]}>
+            <input
+              type="text"
+              value={email}
+              onChange={(e: any) => setEmail(e.target.value)}
+              placeholder="Email"
+              className={styles.input}
+            />
           </div>
-          <div className={styles["form-style"]}>
+          <div className={styles["input-style"]}>
             <input
               type="password"
+              value={password}
+              onChange={(e: any) => setPassword(e.target.value)}
               placeholder="Password"
               className={styles.input}
             />
           </div>
-          <button className={styles["button-auth"]}>Sign In</button>
+          <button type="submit" className={styles["button-auth"]}>
+            Sign In
+          </button>
         </form>
       </div>
     </div>

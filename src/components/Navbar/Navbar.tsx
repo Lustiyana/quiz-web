@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "../../../node_modules/next/link";
 import { usePathname } from "../../../node_modules/next/navigation";
+import Timer from "../Timer/Timer";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -14,11 +15,7 @@ export default function Navbar() {
       {path[path.length - 1] === "" ? (
         <div className="btn">Log Out</div>
       ) : (
-        <div className="border py-2 px-4">
-          <div>JJ</div>
-          <div>MM</div>
-          <div>SS</div>
-        </div>
+        <Timer />
       )}
     </div>
   );

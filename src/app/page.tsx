@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import axios from "../../node_modules/axios/index";
 import Link from "../../node_modules/next/link";
 import Navbar from "../components/Navbar/Navbar";
@@ -13,14 +12,13 @@ async function getData() {
 }
 
 export default function Home() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
+  const handleStart = async () => {
     async function fetchData() {
       const data = await getData();
-      setData(data);
+      localStorage.setItem("data", JSON.stringify(data));
     }
     fetchData();
-  }, []);
+  };
 
   return (
     <div>
@@ -36,6 +34,7 @@ export default function Home() {
             <Link
               href="/questions/1"
               className="btn btn-outline btn-secondary flex"
+              onClick={handleStart}
             >
               Start
             </Link>

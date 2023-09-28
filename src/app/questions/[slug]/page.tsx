@@ -22,12 +22,6 @@ export async function generateStaticParams() {
   }));
 }
 
-async function getData() {
-  const res = await axios.get(
-    "https://opentdb.com/api.php?amount=10&category=18&difficulty=medium"
-  );
-  return await res.data.results;
-}
 export default function Page({ params }: { params: { slug: string } }) {
   const [data, setData] = useState<QuizData[]>([]);
   const [question, setQuestion] = useState<QuizData>();
@@ -35,11 +29,10 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [answer, setAnswer] = useState("");
 
   useEffect(() => {
-    async function fetchData() {
-      const data = await getData();
-      setData(data);
-    }
-    fetchData();
+    const dataString = localStorage.getItem("data");
+    const data = dataString ? JSON.parse(dataString) : null;
+    setData(data);
+    console.log(data);
   }, []);
   function randomSort(arr: any) {
     return arr?.slice().sort(() => Math.random() - 0.5);
@@ -107,12 +100,18 @@ export default function Page({ params }: { params: { slug: string } }) {
                 Prev
               </Link>
             ) : null}
-            <Link
-              href={`/questions/${Number(params.slug) + 1}`}
-              className="btn btn-outline"
-            >
-              Next
-            </Link>
+            {params.slug === data.length?.toString() ? (
+              <Link href="results" className="btn btn-outline">
+                Finish
+              </Link>
+            ) : (
+              <Link
+                href={`/questions/${Number(params.slug) + 1}`}
+                className="btn btn-outline"
+              >
+                Next
+              </Link>
+            )}
           </div>
         </div>
         <div className="drawer-side">
