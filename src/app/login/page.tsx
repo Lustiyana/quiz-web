@@ -10,18 +10,32 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const token = uuidv4();
 
   const handleSubmit = (e: any) => {
+    setLoading(true);
     e.preventDefault();
-    if (email == "user@gmail.com" && password == "abc1234") {
-      localStorage.setItem("token", token);
-      localStorage.setItem("email", email);
+    if (email == "user@gmail.com") {
+      if (password === "abc1234") {
+        localStorage.setItem("token", token);
+        localStorage.setItem("email", email);
 
-      if (localStorage.getItem("token")) {
-        setIsLogin(true);
+        if (localStorage.getItem("token")) {
+          setIsLogin(true);
+        }
+      } else {
+        setLoading(false);
+        setErrorMessage("The password is incorrect");
       }
+    } else {
+      setShowToast(true);
+      setLoading(false);
+      setErrorMessage("The email is incorrect");
     }
   };
   useEffect(() => {
@@ -29,6 +43,14 @@ export default function Page() {
       router.push("/");
     }
   }, [isLogin]);
+
+  useEffect(() => {
+    if (email === "" || password === "") {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [email, password]);
 
   return (
     <div className="flex h-screen">
@@ -59,11 +81,26 @@ export default function Page() {
               className={styles.input}
             />
           </div>
-          <button type="submit" className={styles["button-auth"]}>
-            Sign In
+          <button
+            type="submit"
+            className={styles["button-auth"]}
+            disabled={disabled}
+          >
+            {loading ? (
+              <span className="loading loading-spinner"></span>
+            ) : (
+              <span>Sign In</span>
+            )}
           </button>
         </form>
       </div>
+      {showToast ? (
+        <div className="toast">
+          <div className="alert alert-error">
+            <span>{errorMessage}</span>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

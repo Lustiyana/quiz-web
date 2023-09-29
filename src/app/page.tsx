@@ -15,9 +15,9 @@ async function getData() {
 
 export default function Home() {
   const isStart = localStorage.getItem("data") ? true : false;
-  const token = localStorage.getItem("token");
   const router = useRouter();
   const [isBlank, setIsBlank] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -27,6 +27,7 @@ export default function Home() {
   }, []);
 
   const handleStart = async () => {
+    setLoading(true);
     async function fetchData() {
       const data = await getData();
       localStorage.removeItem("data");
@@ -38,6 +39,7 @@ export default function Home() {
       router.push("/questions/1");
     }
     fetchData();
+    // setLoading(false);
   };
 
   if (isBlank) {
@@ -55,15 +57,19 @@ export default function Home() {
             </div>
             <div className="flex justify-between">
               <button
-                className="btn btn-outline btn-secondary flex"
+                className="btn btn-outline btn-secondary flex w-32"
                 onClick={handleStart}
               >
-                Start
+                {loading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  <span>Start</span>
+                )}
               </button>
               {isStart ? (
                 <Link
                   href="/questions/1"
-                  className="btn btn-outline btn-secondary flex"
+                  className="btn btn-outline btn-secondary flex w-32"
                 >
                   Resume
                 </Link>
